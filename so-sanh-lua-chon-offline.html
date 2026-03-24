@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>So sánh 2 lựa chọn trong 30 ngày</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, Arial, Helvetica, sans-serif;
+      background: #f8fafc;
+      color: #0f172a;
+    }
+    .page {
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 40px;
+      line-height: 1.15;
+      font-weight: 800;
+    }
+    .subtitle {
+      margin: 0 0 24px;
+      font-size: 16px;
+      color: #64748b;
+      line-height: 1.6;
+    }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.05);
+    }
+    .card.emphasis {
+      border: 2px solid #0f172a;
+    }
+    .card-title {
+      margin-bottom: 12px;
+      font-size: 15px;
+      font-weight: 700;
+    }
+    .card-value {
+      margin-bottom: 8px;
+      font-size: 34px;
+      font-weight: 800;
+      line-height: 1.2;
+      word-break: break-word;
+    }
+    .card-desc {
+      font-size: 14px;
+      color: #64748b;
+      line-height: 1.6;
+    }
+    .panel {
+      margin-top: 16px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.05);
+    }
+    .panel h2 {
+      margin: 0 0 16px;
+      font-size: 30px;
+      font-weight: 800;
+    }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    button {
+      border: 0;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+    }
+    button.primary {
+      background: #0f172a;
+      color: white;
+    }
+    button.primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    button.secondary {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+    .meta {
+      font-size: 14px;
+      font-weight: 700;
+      color: #64748b;
+    }
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      align-items: center;
+      margin-bottom: 12px;
+      font-size: 14px;
+      color: #64748b;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .legend-line {
+      width: 24px;
+      height: 4px;
+      border-radius: 999px;
+    }
+    .blue { background: #2563eb; }
+    .red { background: #dc2626; }
+
+    .chart-wrap {
+      width: 100%;
+      overflow: auto;
+      border-radius: 24px;
+      background: white;
+    }
+    svg {
+      display: block;
+      width: 100%;
+      min-width: 900px;
+      height: auto;
+    }
+    .note {
+      margin-top: 16px;
+      font-size: 14px;
+      color: #64748b;
+    }
+    .milestones {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .milestone {
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 16px;
+      background: #fff;
+    }
+    .milestone-title {
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+    .txt-blue { color: #2563eb; }
+    .txt-red { color: #dc2626; }
+
+    @media (max-width: 1100px) {
+      .cards, .milestones { grid-template-columns: 1fr 1fr; }
+      h1 { font-size: 34px; }
+      .panel h2 { font-size: 26px; }
+    }
+    @media (max-width: 700px) {
+      .page { padding: 16px; }
+      .cards, .milestones { grid-template-columns: 1fr; }
+      h1 { font-size: 28px; }
+      .card-value { font-size: 28px; }
+      .panel h2 { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="container">
+      <h1>So sánh 2 lựa chọn trong 30 ngày</h1>
+      <p class="subtitle">
+        A: Nhận <b>1 triệu/ngày</b> trong 30 ngày • B: Ngày đầu nhận <b>10.000đ</b>, mỗi ngày sau <b>gấp đôi</b>
+      </p>
+
+      <div class="cards">
+        <div class="card">
+          <div class="card-title">Lựa chọn A</div>
+          <div class="card-value" id="displayA">0 đ</div>
+          <div class="card-desc">Tổng đến ngày hiện tại nếu mỗi ngày nhận cố định 1.000.000đ</div>
+        </div>
+        <div class="card emphasis">
+          <div class="card-title">Lựa chọn B</div>
+          <div class="card-value" id="displayB">0 đ</div>
+          <div class="card-desc">Tổng đến ngày hiện tại nếu bắt đầu từ 10.000đ và nhân đôi mỗi ngày</div>
+        </div>
+        <div class="card">
+          <div class="card-title">Chênh lệch</div>
+          <div class="card-value" id="ratio">0x</div>
+          <div class="card-desc" id="ratioDesc">Bấm chạy biểu đồ để xem số liệu tăng theo từng ngày</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Biểu đồ tăng trưởng tổng tiền theo từng ngày</h2>
+
+        <div class="controls">
+          <button class="primary" id="playBtn">Chạy biểu đồ</button>
+          <button class="secondary" id="resetBtn">Reset</button>
+          <span class="meta">Ngày hiện tại: <span id="dayCurrent">0</span>/30</span>
+          <span class="meta" id="todayIncome" style="display:none;"></span>
+        </div>
+
+        <div class="legend">
+          <div class="legend-item"><span class="legend-line blue"></span> Tổng A - Trục trái</div>
+          <div class="legend-item"><span class="legend-line red"></span> Tổng B - Trục phải</div>
+        </div>
+
+        <div class="chart-wrap">
+          <svg id="chart" viewBox="0 0 1100 520" aria-label="Biểu đồ tăng trưởng"></svg>
+        </div>
+
+        <div class="note">Giữ nguyên giao diện đầy đủ như bản đầu, chỉ bổ sung animation để biểu đồ chạy theo từng ngày.</div>
+      </div>
+
+      <div class="panel">
+        <h2>Mốc dễ gây bất ngờ</h2>
+        <div class="milestones" id="milestones"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const DAYS = 30;
+    const DAILY_A = 1000000;
+    const START_B = 10000;
+    const W = 1100;
+    const H = 520;
+    const margin = { top: 30, right: 100, bottom: 60, left: 100 };
+    const innerW = W - margin.left - margin.right;
+    const innerH = H - margin.top - margin.bottom;
+    const milestoneDays = [10, 15, 20, 30];
+
+    let currentIndex = -1;
+    let timer = null;
+
+    function formatMoney(value) {
+      return new Intl.NumberFormat("vi-VN", {
+        style: "currency",
+        currency: "VND",
+        maximumFractionDigits: 0
+      }).format(value);
+    }
+
+    function compactNumber(value) {
+      return new Intl.NumberFormat("vi-VN", {
+        notation: "compact",
+        maximumFractionDigits: 1
+      }).format(value);
+    }
+
+    function buildFullData() {
+      const data = [];
+      let totalA = 0;
+      let totalB = 0;
+
+      for (let i = 0; i < DAYS; i += 1) {
+        const day = i + 1;
+        const dailyB = START_B * Math.pow(2, i);
+        totalA += DAILY_A;
+        totalB += dailyB;
+        data.push({ day, totalA, totalB, dailyA: DAILY_A, dailyB });
+      }
+      return data;
+    }
+
+    const fullData = buildFullData();
+    const maxA = Math.max(...fullData.map(d => d.totalA));
+    const maxB = Math.max(...fullData.map(d => d.totalB));
+
+    function x(day) {
+      return margin.left + ((day - 1) / (DAYS - 1)) * innerW;
+    }
+
+    function yA(val) {
+      return margin.top + innerH - (val / maxA) * innerH;
+    }
+
+    function yB(val) {
+      return margin.top + innerH - (val / maxB) * innerH;
+    }
+
+    function pathFor(data, yFn, key) {
+      return data.map((row, i) => `${i === 0 ? "M" : "L"}${x(row.day)},${yFn(row[key])}`).join(" ");
+    }
+
+    function renderMilestones() {
+      const wrap = document.getElementById("milestones");
+      wrap.innerHTML = milestoneDays.map(day => {
+        const row = fullData[day - 1];
+        return `
+          <div class="milestone">
+            <div class="milestone-title">Ngày ${day}</div>
+            <div class="txt-blue">A: ${formatMoney(row.totalA)}</div>
+            <div class="txt-red">B: ${formatMoney(row.totalB)}</div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderStats() {
+      const currentRow = currentIndex >= 0 ? fullData[currentIndex] : null;
+      const displayA = currentRow ? currentRow.totalA : 0;
+      const displayB = currentRow ? currentRow.totalB : 0;
+      const ratio = displayA > 0 ? displayB / displayA : 0;
+
+      document.getElementById("displayA").textContent = formatMoney(displayA);
+      document.getElementById("displayB").textContent = formatMoney(displayB);
+      document.getElementById("ratio").textContent = currentIndex >= 0 ? `${ratio.toFixed(0)}x` : "0x";
+      document.getElementById("ratioDesc").textContent =
+        currentIndex >= 0
+          ? `Lựa chọn B lớn hơn A khoảng ${ratio.toFixed(0)} lần`
+          : "Bấm chạy biểu đồ để xem số liệu tăng theo từng ngày";
+      document.getElementById("dayCurrent").textContent = currentIndex >= 0 ? fullData[currentIndex].day : 0;
+
+      const todayIncome = document.getElementById("todayIncome");
+      if (currentRow) {
+        todayIncome.style.display = "inline";
+        todayIncome.textContent = `Hôm nay nhận: A = ${formatMoney(currentRow.dailyA)} • B = ${formatMoney(currentRow.dailyB)}`;
+      } else {
+        todayIncome.style.display = "none";
+        todayIncome.textContent = "";
+      }
+    }
+
+    function renderChart() {
+      const svg = document.getElementById("chart");
+      const visibleData = currentIndex >= 0 ? fullData.slice(0, currentIndex + 1) : [];
+      const pathAData = pathFor(visibleData, yA, "totalA");
+      const pathBData = pathFor(visibleData, yB, "totalB");
+
+      let labels = "";
+      const currentRow = currentIndex >= 0 ? fullData[currentIndex] : null;
+
+      if (currentRow) {
+        const xPos = x(currentRow.day);
+        const yPosA = yA(currentRow.totalA);
+        const yPosB = yB(currentRow.totalB);
+        const isOverlap = Math.abs(yPosA - yPosB) < 20;
+
+        labels = `
+          <circle cx="${xPos}" cy="${yPosA}" r="5" fill="#2563eb"></circle>
+          <circle cx="${xPos}" cy="${yPosB}" r="5" fill="#dc2626"></circle>
+
+          <text x="${xPos - 8}" y="${yPosA - (isOverlap ? 20 : 10)}" text-anchor="end" font-size="12" fill="#2563eb" font-weight="700">
+            ${formatMoney(currentRow.totalA)}
+          </text>
+          <text x="${xPos - 8}" y="${yPosB + (isOverlap ? 15 : -10)}" text-anchor="end" font-size="12" fill="#dc2626" font-weight="700">
+            ${formatMoney(currentRow.totalB)}
+          </text>
+        `;
+      }
+
+      let grid = "";
+      for (let i = 0; i < 6; i += 1) {
+        const y = margin.top + (innerH / 5) * i;
+        grid += `<line x1="${margin.left}" y1="${y}" x2="${W - margin.right}" y2="${y}" stroke="#e2e8f0" stroke-dasharray="4 4"></line>`;
+      }
+
+      let ticks = "";
+      for (let i = 0; i < 6; i += 1) {
+        const valueA = maxA - (maxA / 5) * i;
+        const valueB = maxB - (maxB / 5) * i;
+        const y = margin.top + (innerH / 5) * i;
+        ticks += `
+          <text x="${margin.left - 12}" y="${y + 4}" text-anchor="end" font-size="12" fill="#2563eb" font-weight="700">${compactNumber(valueA)}</text>
+          <text x="${W - margin.right + 12}" y="${y + 4}" text-anchor="start" font-size="12" fill="#dc2626" font-weight="700">${compactNumber(valueB)}</text>
+        `;
+      }
+
+      let dayTicks = "";
+      for (let day = 1; day <= DAYS; day += 1) {
+        if (day % 2 === 1) {
+          const xx = x(day);
+          dayTicks += `
+            <line x1="${xx}" y1="${H - margin.bottom}" x2="${xx}" y2="${H - margin.bottom + 6}" stroke="#94a3b8"></line>
+            <text x="${xx}" y="${H - margin.bottom + 22}" text-anchor="middle" font-size="12" fill="#475569">${day}</text>
+          `;
+        }
+      }
+
+      svg.innerHTML = `
+        <rect x="0" y="0" width="${W}" height="${H}" fill="#ffffff" rx="20"></rect>
+        ${grid}
+
+        <line x1="${margin.left}" y1="${margin.top}" x2="${margin.left}" y2="${H - margin.bottom}" stroke="#94a3b8" stroke-width="1.5"></line>
+        <line x1="${W - margin.right}" y1="${margin.top}" x2="${W - margin.right}" y2="${H - margin.bottom}" stroke="#94a3b8" stroke-width="1.5"></line>
+        <line x1="${margin.left}" y1="${H - margin.bottom}" x2="${W - margin.right}" y2="${H - margin.bottom}" stroke="#94a3b8" stroke-width="1.5"></line>
+
+        ${ticks}
+        ${dayTicks}
+
+        <text x="${margin.left}" y="${margin.top - 10}" text-anchor="start" font-size="13" fill="#2563eb" font-weight="700">Tổng A</text>
+        <text x="${W - margin.right}" y="${margin.top - 10}" text-anchor="end" font-size="13" fill="#dc2626" font-weight="700">Tổng B</text>
+        <text x="${W / 2}" y="${H - 16}" text-anchor="middle" font-size="13" fill="#475569">Ngày</text>
+
+        <path d="${pathAData}" fill="none" stroke="#2563eb" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"></path>
+        <path d="${pathBData}" fill="none" stroke="#dc2626" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"></path>
+
+        ${labels}
+      `;
+    }
+
+    function renderAll() {
+      renderStats();
+      renderChart();
+    }
+
+    function resetAnimation() {
+      if (timer) {
+        clearInterval(timer);
+        timer = null;
+      }
+      currentIndex = -1;
+      document.getElementById("playBtn").disabled = false;
+      renderAll();
+    }
+
+    function playAnimation() {
+      if (timer) clearInterval(timer);
+      currentIndex = -1;
+      document.getElementById("playBtn").disabled = true;
+      renderAll();
+
+      let nextIndex = 0;
+      timer = setInterval(() => {
+        currentIndex = nextIndex;
+        renderAll();
+        nextIndex += 1;
+
+        if (nextIndex >= fullData.length) {
+          clearInterval(timer);
+          timer = null;
+          document.getElementById("playBtn").disabled = false;
+        }
+      }, 300);
+    }
+
+    document.getElementById("playBtn").addEventListener("click", playAnimation);
+    document.getElementById("resetBtn").addEventListener("click", resetAnimation);
+
+    renderMilestones();
+    renderAll();
+  </script>
+</body>
+</html>
