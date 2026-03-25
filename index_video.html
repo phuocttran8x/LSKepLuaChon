@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Countdown</title>
+  <meta name="description" content="Trang web tĩnh chạy offline để mở video trực tiếp" />
+  <meta property="og:title" content="Video Offline" />
+  <meta property="og:description" content="Trang web tĩnh chạy offline để mở video trực tiếp" />
+  <meta property="og:type" content="website" />
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(135deg, #071a2f, #0e3a66);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .card {
+      width: 100%;
+      max-width: 900px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 24px;
+      padding: 24px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+      text-align: center;
+    }
+    h1 {
+      margin: 0 0 16px;
+      font-size: 32px;
+    }
+    video {
+      width: 100%;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    }
+    .note {
+      margin-top: 12px;
+      font-size: 14px;
+      color: rgba(255,255,255,0.7);
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>⏳ Video đang chạy...</h1>
+
+    <video controls autoplay muted>
+      <source src="countdown.mp4" type="video/mp4">
+      Trình duyệt của bạn không hỗ trợ video.
+    </video>
+    
+  </main>
+</body>
+</html>
